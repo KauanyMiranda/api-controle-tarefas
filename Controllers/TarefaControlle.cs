@@ -50,5 +50,19 @@ namespace AtividadeApiTarefa.Controllers
 
             return Ok(tarefa);
         }
+
+
+        [HttpDelete("{id}")]
+        public IActionResult Remover(int id)
+        {
+            var tarefa = _ListaTarefas.Find(t => t.Id == id);
+            if (tarefa is null)
+            {
+                return NotFound();
+            }
+
+            _ListaTarefas.Remove(tarefa);
+            return NoContent();
+        }
     }
 }

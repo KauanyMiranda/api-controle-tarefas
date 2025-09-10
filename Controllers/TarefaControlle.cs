@@ -9,12 +9,22 @@ namespace AtividadeApiTarefa.Controllers
     [ApiController]
     public class TarefaControlle : ControllerBase
     {
-        private static List<Tarefas> _ListaTarefas = new List<Tarefas>();
+        private static List<Tarefas> _ListaTarefas = new List<Tarefas>
+        {
+            new Tarefas() { Id = 1, NomeTarefa = "Calculadora IMC", Descricao = "Fazer com React"},
+            new Tarefas() { Id = 2, NomeTarefa = "API Tarefa", Descricao = "Fazer uma API"}
+        };
 
-        private static int _proximoId = 1;
+        private static int _proximoId = 3;
 
-        [HttpGet("{id}")]
-        public IActionResult BuscarTodos(int id)
+        [HttpGet("/BurcarTodos")]
+        public IActionResult BuscarTodos()
+        {
+            return Ok(_ListaTarefas);
+        }
+
+        [HttpGet("{id}/BuscarId")]
+        public IActionResult BuscarPorId(int id)
         {
             var tarefa = _ListaTarefas.FirstOrDefault(t => t.Id == id);
             if (tarefa is null)
@@ -22,24 +32,24 @@ namespace AtividadeApiTarefa.Controllers
                 return NotFound();
             }
 
-            return Ok();
+            return Ok(tarefa);
         }
 
-        [HttpPost]
+        [HttpPost("/Criar")]
         public IActionResult Criar([FromBody] TarefasDto novaTarefa)
         {
             var tarefa = new Tarefas() { NomeTarefa = novaTarefa.NomeTarefa ,Descricao = novaTarefa.Descricao};
             tarefa.Id = _proximoId++;
-            tarefa.Status = "Aberto";
+            tarefa.Situacao = "Aberto";
             _ListaTarefas.Add(tarefa);
 
             return Created("", tarefa);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}/Atualizar")]
         public IActionResult Atualizar (int id, [FromBody] TarefasDto novaTarefa)
         {
-            var tarefa = _ListaTarefas.Find(t => t.Id == id);
+            var tarefa = _ListaTarefas.FirstOrDefault(t => t.Id == id);
             if (tarefa is null)
             {
                 return NotFound();
@@ -52,10 +62,10 @@ namespace AtividadeApiTarefa.Controllers
         }
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}/Remover")]
         public IActionResult Remover(int id)
         {
-            var tarefa = _ListaTarefas.Find(t => t.Id == id);
+            var tarefa = _ListaTarefas.FirstOrDefault(t => t.Id == id);
             if (tarefa is null)
             {
                 return NotFound();
@@ -63,6 +73,20 @@ namespace AtividadeApiTarefa.Controllers
 
             _ListaTarefas.Remove(tarefa);
             return NoContent();
+        }
+
+        [HttpPut("{id}/Fechamento")]
+        public IActionResult FecharChamado(int id)
+        {
+            var tarefa = _ListaTarefas.FirstOrDefault(t => t.Id == id);
+            if (tarefa is null)
+            {
+                return NotFound();
+            }
+
+            tarefa.Situacao = "Fechado";
+
+            return Ok(tarefa);
         }
     }
 }

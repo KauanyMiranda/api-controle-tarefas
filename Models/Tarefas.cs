@@ -7,6 +7,6 @@
         public string Descricao { get; set; }
         public DateTime DataAbertura { get; set; } = DateTime.Now;
         public DateTime? DataFechamento { get; set; }
-        public string Status { get; set; } = "Aberto";
+        public string Situacao { get; set; } = "Aberto";
     }
 }
